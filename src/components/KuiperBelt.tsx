@@ -6,6 +6,15 @@ import { Line, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { KuiperBeltObject } from '@/types/solar-system';
 
+interface KuiperBeltProps {
+  objects: KuiperBeltObject[];
+  speed: number;
+  showOrbits: boolean;
+  showLabels: boolean;
+  selectedPlanet: string | null;
+  onPlanetClick: (name: string) => void;
+}
+
 // 单个柯伊伯带天体组件
 function KuiperObject({
   obj,
