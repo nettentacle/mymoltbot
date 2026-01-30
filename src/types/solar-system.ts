@@ -31,6 +31,7 @@ export interface MoonData {
   distance: number; // 距离行星的距离
   period: number;
   color: string;
+  texture?: string; // 纹理 URL
 }
 
 // 哈雷彗星数据
@@ -50,7 +51,9 @@ export interface CometData {
 // 柯伊伯带/奥尔特云对象
 export interface KuiperBeltObject {
   name: string;
+  nameCN: string;
   distance: number;
   radius: number;
   color: string;
+  texture?: string;
 }

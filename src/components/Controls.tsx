@@ -38,7 +38,12 @@ export default function Controls({
     'Uranus': '天王星',
     'Neptune': '海王星',
     'Halley': '哈雷彗星',
-    'Pluto': '冥王星'
+    'Pluto': '冥王星',
+    'Eris': '阋神星',
+    'Makemake': '鸟神星',
+    'Haumea': '妊神星',
+    'Sedna': '赛德娜',
+    'Orcus': '奥卡斯'
   };
 
   return (
