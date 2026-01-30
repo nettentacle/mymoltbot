@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { Points, PointMaterial } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { Points, PointMaterial } from '@react-three/drei';
+import * as THREE from 'three';
 
 interface OortCloudProps {
   cloud: {
@@ -14,7 +15,7 @@ interface OortCloudProps {
 export default function OortCloud({ cloud }: OortCloudProps) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // 生成奥尔特云粒子（球形分布）
+  // 生成奥尔特云粒子
   const generateOortCloud = () => {
     const particleCount = cloud.particleCount;
     const positions = new Float32Array(particleCount * 3);
@@ -23,8 +24,6 @@ export default function OortCloud({ cloud }: OortCloudProps) {
     for (let i = 0; i < particleCount; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      // 奥尔特云非常广阔，从大约 5000 到 100,000 AU
-      // 这里使用缩放后的范围
       const minRadius = cloud.distance;
       const maxRadius = cloud.distance * 2.5;
       const radius = minRadius + Math.random() * (maxRadius - minRadius);
@@ -37,7 +36,6 @@ export default function OortCloud({ cloud }: OortCloudProps) {
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
 
-      // 淡蓝色到白色的渐变
       const t = Math.random();
       colors[i * 3] = 0.6 + t * 0.4;
       colors[i * 3 + 1] = 0.7 + t * 0.3;
@@ -57,13 +55,18 @@ export default function OortCloud({ cloud }: OortCloudProps) {
   });
 
   return (
-    <Points ref={pointsRef} positions={positions}>
+    <Points 
+      ref={pointsRef} 
+      positions={positions}
+      stride={3}
+    >
       <PointMaterial
         transparent
         vertexColors
-        size={0.2}
+        size={0.18}
         sizeAttenuation={true}
-        opacity={0.35}
+        opacity={0.3}
+        depthWrite={false}
       />
     </Points>
   );

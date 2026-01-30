@@ -82,32 +82,52 @@ export default function Planet({
         <Line
           points={orbitPoints}
           color="white"
-          opacity={0.2}
+          opacity={0.15}
           transparent
           lineWidth={1}
         />
       )}
 
-      <mesh ref={meshRef} onClick={onClick}>
+      {/* 行星本体 */}
+      <mesh 
+        ref={meshRef} 
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+      >
         <sphereGeometry args={[planet.radius, 64, 64]} />
         <meshStandardMaterial
           map={texture}
           color={planet.color}
           emissive={isSelected ? planet.color : 'black'}
           emissiveIntensity={isSelected ? 0.3 : 0}
-          roughness={0.8}
-          metalness={0.1}
+          roughness={0.7}
+          metalness={0.2}
         />
       </mesh>
 
+      {/* 选中效果 */}
+      {isSelected && (
+        <mesh>
+          <sphereGeometry args={[planet.radius * 1.2, 32, 32]} />
+          <meshBasicMaterial
+            color={planet.color}
+            transparent
+            opacity={0.15}
+            side={THREE.BackSide}
+          />
+        </mesh>
+      )}
+
       {showLabel && (
         <Text
-          position={[planet.radius + 1, 0, 0]}
-          fontSize={0.5}
+          position={[planet.radius + 2, 0, 0]}
+          fontSize={0.6}
           color="white"
           anchorX="center"
           anchorY="middle"
-          outlineWidth={0.02}
+          outlineWidth={0.03}
           outlineColor="black"
         >
           {planet.nameCN}
@@ -138,6 +158,7 @@ function Moon({ moon, planetRadius, speed }: { moon: any; planetRadius: number; 
       const x = Math.cos(angle) * moon.distance;
       const z = Math.sin(angle) * moon.distance;
       moonRef.current.position.set(x, 0, z);
+      moonRef.current.rotation.y += delta * speed * 2;
     }
   });
 
@@ -162,7 +183,7 @@ function Ring({ ring }: { ring: any }) {
         color={ring.color}
         side={THREE.DoubleSide}
         transparent
-        opacity={0.8}
+        opacity={0.7}
       />
     </mesh>
   );

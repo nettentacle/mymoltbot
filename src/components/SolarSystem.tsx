@@ -1,16 +1,16 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { planets, halleyComet, kuiperBeltObjects, oortCloud, SUN_RADIUS } from '@/data/planets';
-import { PlanetData } from '@/types/solar-system';
+import { PlanetData, CometData, KuiperBeltObject } from '@/types/solar-system';
 import Planet from './Planet';
 import Sun from './Sun';
 import HalleyComet from './HalleyComet';
 import KuiperBelt from './KuiperBelt';
 import OortCloud from './OortCloud';
+import { planets, halleyComet, kuiperBeltObjects, oortCloud } from '@/data/planets';
 
 interface SolarSystemProps {
   speed: number;
@@ -19,7 +19,7 @@ interface SolarSystemProps {
   showKuiperBelt: boolean;
   showOortCloud: boolean;
   selectedPlanet: string | null;
-  onPlanetClick: (name: string | null) => void;
+  onPlanetClick: (name: string) => void;
 }
 
 export default function SolarSystem({
@@ -35,7 +35,10 @@ export default function SolarSystem({
 
   return (
     <group ref={groupRef}>
-      <Sun onClick={() => onPlanetClick('Sun')} />
+      <Sun 
+        onClick={() => onPlanetClick('Sun')} 
+        isSelected={selectedPlanet === 'Sun'}
+      />
 
       {planets.map((planet) => (
         <Planet
@@ -53,6 +56,9 @@ export default function SolarSystem({
         comet={halleyComet}
         speed={speed}
         showOrbit={showOrbits}
+        showLabel={showLabels}
+        isSelected={selectedPlanet === halleyComet.name}
+        onClick={() => onPlanetClick(halleyComet.name)}
       />
 
       {showKuiperBelt && (
@@ -60,6 +66,9 @@ export default function SolarSystem({
           objects={kuiperBeltObjects}
           speed={speed}
           showOrbits={showOrbits}
+          showLabels={showLabels}
+          selectedPlanet={selectedPlanet}
+          onPlanetClick={onPlanetClick}
         />
       )}
 
