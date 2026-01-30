@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, Stars } from '@react-three/drei';
 import { Suspense, useState, useRef } from 'react';
 import * as THREE from 'three';
 import SolarSystem from '@/components/SolarSystem';
@@ -18,7 +18,6 @@ export default function Home() {
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   
-  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<any>(null);
 
   // 获取选中的行星数据
@@ -57,14 +56,12 @@ export default function Home() {
     if (!controlsRef.current) return;
     
     let distance = 100;
-    let targetDistance = 0;
     
     if (planetName === 'Sun') {
       distance = 30;
     } else {
       const planet = planets.find(p => p.name === planetName);
       if (planet) {
-        targetDistance = planet.orbit.distance;
         distance = Math.max(20, planet.radius * 15);
       }
     }
@@ -73,7 +70,8 @@ export default function Home() {
     const x = Math.cos(angle) * distance;
     const z = Math.sin(angle) * distance;
     
-    controlsRef.current.camera.position.set(x, distance * 0.5, z);
+    const camera = controlsRef.current.object as THREE.PerspectiveCamera;
+    camera.position.set(x, distance * 0.5, z);
     controlsRef.current.target.set(0, 0, 0);
     controlsRef.current.update();
   };
@@ -81,16 +79,10 @@ export default function Home() {
   return (
     <main className="w-full h-screen bg-black overflow-hidden relative">
       <Canvas
+        camera={{ position: [0, 50, 100], fov: 60 }}
         gl={{ antialias: true, alpha: true }}
         performance={{ min: 0.5 }}
       >
-        <PerspectiveCamera
-          ref={cameraRef}
-          makeDefault
-          position={[0, 50, 100]}
-          fov={60}
-        />
-        
         <Suspense fallback={null}>
           <Stars 
             radius={300} 
