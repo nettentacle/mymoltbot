@@ -24,7 +24,7 @@ export default function HalleyComet({
   onClick 
 }: HalleyCometProps) {
   const cometRef = useRef<THREE.Group>(null);
-  const tailRef = useRef<THREE.Mesh>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
   const [time, setTime] = useState(0);
 
   // 计算彗星位置（椭圆轨道）
@@ -49,14 +49,6 @@ export default function HalleyComet({
     if (cometRef.current) {
       const [x, y, z] = calculatePosition(time);
       cometRef.current.position.set(x, y, z);
-
-      const distanceToSun = Math.sqrt(x * x + y * y + z * z);
-      const tailScale = Math.max(1, comet.tailLength * (15 / distanceToSun));
-
-      if (tailRef.current) {
-        tailRef.current.scale.set(tailScale * 0.3, tailScale * 0.3, tailScale);
-        tailRef.current.lookAt(0, 0, 0);
-      }
     }
   });
 
@@ -92,11 +84,11 @@ export default function HalleyComet({
       {/* 选中效果 */}
       {isSelected && (
         <mesh>
-          <sphereGeometry args={[0.5, 16, 16]} />
+          <sphereGeometry args={[0.8, 16, 16]} />
           <meshBasicMaterial
             color="cyan"
             transparent
-            opacity={0.2}
+            opacity={0.25}
             side={THREE.BackSide}
           />
         </mesh>
@@ -104,41 +96,63 @@ export default function HalleyComet({
 
       {/* 彗星核心 */}
       <mesh 
+        ref={coreRef}
         onClick={(e) => {
           e.stopPropagation();
           onClick();
         }}
       >
-        <sphereGeometry args={[0.3, 32, 32]} />
+        <sphereGeometry args={[0.35, 32, 32]} />
         <meshStandardMaterial
-          color="#E8E8E8"
+          color="#FFFFFF"
           emissive="#FFFFFF"
-          emissiveIntensity={0.9}
+          emissiveIntensity={1.5}
           roughness={0.3}
           metalness={0.1}
         />
       </mesh>
 
-      {/* 彗发 */}
+      {/* 彗发 - 增大并增加亮度 */}
       <mesh>
-        <sphereGeometry args={[0.6, 32, 32]} />
+        <sphereGeometry args={[1.0, 32, 32]} />
         <meshBasicMaterial
           color="#B0E0E6"
           transparent
-          opacity={0.3}
+          opacity={0.4}
         />
       </mesh>
 
-      {/* 彗尾（锥形） */}
-      <mesh ref={tailRef} position={[0, 0, -1]}>
-        <coneGeometry args={[0.5, comet.tailLength, 8, 1, true]} />
-        <meshBasicMaterial
-          color="#87CEEB"
-          transparent
-          opacity={0.35}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* 彗尾 - 更长的锥形，多层效果 */}
+      <group position={[0, 0, 0.5]}>
+        {/* 内层彗尾 */}
+        <mesh rotation={[0, 0, 0]}>
+          <coneGeometry args={[0.6, comet.tailLength * 0.6, 16, 1, true]} />
+          <meshBasicMaterial
+            color="#87CEEB"
+            transparent
+            opacity={0.5}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* 外层彗尾 */}
+        <mesh rotation={[0, 0, 0]}>
+          <coneGeometry args={[0.4, comet.tailLength * 0.8, 16, 1, true]} />
+          <meshBasicMaterial
+            color="#ADD8E6"
+            transparent
+            opacity={0.3}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      </group>
+
+      {showLabel && (
+        <mesh position={[1.2, 0.5, 0]}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshBasicMaterial color="cyan" />
+        </mesh>
+      )}
     </group>
   );
 }

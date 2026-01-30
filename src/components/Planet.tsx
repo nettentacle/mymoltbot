@@ -88,7 +88,7 @@ export default function Planet({
         />
       )}
 
-      {/* 行星本体 - 使用纹理 */}
+      {/* 行星本体 - 增加亮度 */}
       <mesh 
         ref={meshRef} 
         onClick={(e) => {
@@ -100,10 +100,8 @@ export default function Planet({
         <meshStandardMaterial
           map={texture}
           color={planet.color}
-          emissive={isSelected ? planet.color : 'black'}
-          emissiveIntensity={isSelected ? 0.3 : 0}
-          roughness={0.7}
-          metalness={0.2}
+          roughness={0.6}
+          metalness={0.3}
         />
       </mesh>
 
@@ -114,7 +112,7 @@ export default function Planet({
           <meshBasicMaterial
             color={planet.color}
             transparent
-            opacity={0.15}
+            opacity={0.25}
             side={THREE.BackSide}
           />
         </mesh>
@@ -123,11 +121,11 @@ export default function Planet({
       {showLabel && (
         <Text
           position={[planet.radius + 2, 0, 0]}
-          fontSize={0.6}
+          fontSize={0.7}
           color="white"
           anchorX="center"
           anchorY="middle"
-          outlineWidth={0.03}
+          outlineWidth={0.04}
           outlineColor="black"
         >
           {planet.nameCN}
@@ -168,8 +166,8 @@ function Moon({ moon, planetRadius, speed }: { moon: any; planetRadius: number; 
       <meshStandardMaterial
         map={texture}
         color={moon.color}
-        roughness={0.9}
-        metalness={0.1}
+        roughness={0.7}
+        metalness={0.2}
       />
     </mesh>
   );
@@ -179,11 +177,13 @@ function Ring({ ring }: { ring: any }) {
   return (
     <mesh rotation={[Math.PI / 2, 0, 0]}>
       <ringGeometry args={[ring.innerRadius, ring.outerRadius, 64]} />
-      <meshBasicMaterial
+      <meshStandardMaterial
         color={ring.color}
         side={THREE.DoubleSide}
         transparent
-        opacity={0.7}
+        opacity={0.8}
+        roughness={0.8}
+        metalness={0.1}
       />
     </mesh>
   );

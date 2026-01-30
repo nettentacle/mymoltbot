@@ -1,0 +1,22 @@
+Enhancement: Improve solar system visuals
+
+1. Enhanced Sun:
+   - Increased glow effect (3 layers)
+   - Higher emissive intensity (2.0)
+   - Emissive map for texture glow
+   - Stronger point lights
+   - Better visible texture
+
+2. Improved Halley's Comet:
+   - Longer multi-layer tail (2 cones)
+   - Larger coma (1.0 radius)
+   - Brighter core (emissive 1.5)
+   - More visible tail effect
+
+3. Adjusted brightness:
+   - Planets: roughness 0.6, metalness 0.3
+   - Moons: roughness 0.7, metalness 0.2
+   - Rings: transparency 0.8
+   - Better light reflection
+
+All celestial bodies now properly visible and bright!
