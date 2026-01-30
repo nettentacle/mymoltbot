@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
+import { TEXTURES } from '@/data/planets';
 
 interface SunProps {
   onClick: () => void;
@@ -12,6 +13,9 @@ interface SunProps {
 export default function Sun({ onClick, isSelected }: SunProps) {
   const sunRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  
+  // 加载太阳纹理
+  const texture = useLoader(THREE.TextureLoader, TEXTURES.sun);
 
   useFrame(() => {
     if (sunRef.current) {
@@ -37,11 +41,11 @@ export default function Sun({ onClick, isSelected }: SunProps) {
         </mesh>
       )}
 
-      {/* 太阳本体 - 不使用纹理避免加载错误 */}
+      {/* 太阳本体 - 使用纹理 */}
       <mesh ref={sunRef} onClick={(e) => { e.stopPropagation(); onClick(); }}>
         <sphereGeometry args={[5, 64, 64]} />
         <meshStandardMaterial
-          color="#FFD700"
+          map={texture}
           emissive="#FFA500"
           emissiveIntensity={1.0}
           roughness={1}

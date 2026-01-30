@@ -5,17 +5,32 @@ export const SUN_RADIUS = 5;
 export const ORBIT_SCALE = 15; // 轨道距离缩放因子
 export const PLANET_SCALE = 0.5; // 行星大小缩放因子
 
+// 本地纹理路径
+const TEXTURES = {
+  sun: '/textures/sun.jpg',
+  mercury: '/textures/mercury.jpg',
+  venus: '/textures/venus.jpg',
+  earth: '/textures/earth.jpg',
+  mars: '/textures/mars.jpg',
+  jupiter: '/textures/jupiter.jpg',
+  saturn: '/textures/saturn.jpg',
+  uranus: '/textures/uranus.jpg',
+  neptune: '/textures/neptune.jpg',
+  moon: '/textures/moon.jpg'
+};
+
 export const planets: PlanetData[] = [
   {
     name: 'Mercury',
     nameCN: '水星',
     radius: 0.8 * PLANET_SCALE,
     color: '#B5B5B5',
+    texture: TEXTURES.mercury,
     orbit: {
       distance: 10,
       eccentricity: 0.205,
       inclination: 7,
-      period: 88 // 88天 - 最快
+      period: 88
     },
     rotationSpeed: 0.01
   },
@@ -24,11 +39,12 @@ export const planets: PlanetData[] = [
     nameCN: '金星',
     radius: 1.5 * PLANET_SCALE,
     color: '#E6C87A',
+    texture: TEXTURES.venus,
     orbit: {
       distance: 15,
       eccentricity: 0.007,
       inclination: 3.4,
-      period: 225 // 225天
+      period: 225
     },
     rotationSpeed: 0.005
   },
@@ -37,11 +53,12 @@ export const planets: PlanetData[] = [
     nameCN: '地球',
     radius: 1.6 * PLANET_SCALE,
     color: '#6B93D6',
+    texture: TEXTURES.earth,
     orbit: {
       distance: 20,
       eccentricity: 0.017,
       inclination: 0,
-      period: 365 // 365天
+      period: 365
     },
     rotationSpeed: 0.02,
     moons: [
@@ -51,7 +68,8 @@ export const planets: PlanetData[] = [
         radius: 0.4 * PLANET_SCALE,
         distance: 3,
         period: 27,
-        color: '#C4C4C4'
+        color: '#C4C4C4',
+        texture: TEXTURES.moon
       }
     ]
   },
@@ -60,11 +78,12 @@ export const planets: PlanetData[] = [
     nameCN: '火星',
     radius: 1.2 * PLANET_SCALE,
     color: '#C1440E',
+    texture: TEXTURES.mars,
     orbit: {
       distance: 25,
       eccentricity: 0.094,
       inclination: 1.85,
-      period: 687 // 687天
+      period: 687
     },
     rotationSpeed: 0.018,
     moons: [
@@ -91,11 +110,12 @@ export const planets: PlanetData[] = [
     nameCN: '木星',
     radius: 4 * PLANET_SCALE,
     color: '#D8CA9D',
+    texture: TEXTURES.jupiter,
     orbit: {
       distance: 35,
       eccentricity: 0.049,
       inclination: 1.3,
-      period: 4333 // 11.9年
+      period: 4333
     },
     rotationSpeed: 0.04,
     moons: [
@@ -138,11 +158,12 @@ export const planets: PlanetData[] = [
     nameCN: '土星',
     radius: 3.5 * PLANET_SCALE,
     color: '#F4D59E',
+    texture: TEXTURES.saturn,
     orbit: {
       distance: 45,
       eccentricity: 0.057,
       inclination: 2.49,
-      period: 10759 // 29.5年
+      period: 10759
     },
     rotationSpeed: 0.038,
     ring: {
@@ -166,11 +187,12 @@ export const planets: PlanetData[] = [
     nameCN: '天王星',
     radius: 2.5 * PLANET_SCALE,
     color: '#D1E7E7',
+    texture: TEXTURES.uranus,
     orbit: {
       distance: 55,
       eccentricity: 0.046,
       inclination: 0.77,
-      period: 30687 // 84年
+      period: 30687
     },
     rotationSpeed: 0.03,
     moons: [
@@ -197,11 +219,12 @@ export const planets: PlanetData[] = [
     nameCN: '海王星',
     radius: 2.4 * PLANET_SCALE,
     color: '#5B5DDF',
+    texture: TEXTURES.neptune,
     orbit: {
       distance: 65,
       eccentricity: 0.011,
       inclination: 1.77,
-      period: 60190 // 165年
+      period: 60190
     },
     rotationSpeed: 0.032,
     moons: [
@@ -225,7 +248,7 @@ export const halleyComet: CometData = {
     perihelion: 8,
     aphelion: 90,
     eccentricity: 0.967,
-    period: 2750, // 约 7.5年（缩放后）
+    period: 2750,
     inclination: 162
   },
   tailLength: 10
@@ -282,3 +305,6 @@ export const oortCloud = {
   distance: 100,
   particleCount: 300
 };
+
+// 导出纹理供其他组件使用
+export { TEXTURES };

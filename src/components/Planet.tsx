@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { PlanetData } from '@/types/solar-system';
@@ -26,6 +26,9 @@ export default function Planet({
   const planetRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const [time, setTime] = useState(0);
+
+  // 加载行星纹理（如果有）
+  const texture = planet.texture ? useLoader(THREE.TextureLoader, planet.texture) : null;
 
   // 计算轨道位置
   const calculatePosition = (t: number) => {
@@ -85,7 +88,7 @@ export default function Planet({
         />
       )}
 
-      {/* 行星本体 - 不使用纹理 */}
+      {/* 行星本体 - 使用纹理 */}
       <mesh 
         ref={meshRef} 
         onClick={(e) => {
@@ -95,6 +98,7 @@ export default function Planet({
       >
         <sphereGeometry args={[planet.radius, 64, 64]} />
         <meshStandardMaterial
+          map={texture}
           color={planet.color}
           emissive={isSelected ? planet.color : 'black'}
           emissiveIntensity={isSelected ? 0.3 : 0}
@@ -142,6 +146,9 @@ export default function Planet({
 function Moon({ moon, planetRadius, speed }: { moon: any; planetRadius: number; speed: number }) {
   const moonRef = useRef<THREE.Mesh>(null);
   const [moonTime, setMoonTime] = useState(0);
+  
+  // 加载月球纹理（如果有）
+  const texture = moon.texture ? useLoader(THREE.TextureLoader, moon.texture) : null;
 
   useFrame((state, delta) => {
     setMoonTime(moonTime + delta * speed * 10);
@@ -159,6 +166,7 @@ function Moon({ moon, planetRadius, speed }: { moon: any; planetRadius: number; 
     <mesh ref={moonRef}>
       <sphereGeometry args={[moon.radius, 32, 32]} />
       <meshStandardMaterial
+        map={texture}
         color={moon.color}
         roughness={0.9}
         metalness={0.1}
