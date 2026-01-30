@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { CometData } from '@/types/solar-system';
@@ -50,7 +50,6 @@ export default function HalleyComet({
       const [x, y, z] = calculatePosition(time);
       cometRef.current.position.set(x, y, z);
 
-      // 计算尾巴方向（背向太阳）
       const distanceToSun = Math.sqrt(x * x + y * y + z * z);
       const tailScale = Math.max(1, comet.tailLength * (15 / distanceToSun));
 
@@ -140,13 +139,6 @@ export default function HalleyComet({
           side={THREE.DoubleSide}
         />
       </mesh>
-
-      {showLabel && (
-        <mesh position={[1, 0.5, 0]}>
-          <sphereGeometry args={[0.05, 8, 8]} />
-          <meshBasicMaterial color="cyan" />
-        </mesh>
-      )}
     </group>
   );
 }

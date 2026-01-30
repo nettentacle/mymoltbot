@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { Text } from '@react-three/drei';
 
 interface SunProps {
   onClick: () => void;
@@ -13,9 +12,6 @@ interface SunProps {
 export default function Sun({ onClick, isSelected }: SunProps) {
   const sunRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
-
-  // 加载太阳纹理
-  const texture = useLoader(THREE.TextureLoader, 'https://upload.wikimedia.org/wikipedia/commons/9/99/Map_of_the_full_sun.jpg');
 
   useFrame(() => {
     if (sunRef.current) {
@@ -41,14 +37,13 @@ export default function Sun({ onClick, isSelected }: SunProps) {
         </mesh>
       )}
 
-      {/* 太阳本体 */}
+      {/* 太阳本体 - 不使用纹理避免加载错误 */}
       <mesh ref={sunRef} onClick={(e) => { e.stopPropagation(); onClick(); }}>
         <sphereGeometry args={[5, 64, 64]} />
         <meshStandardMaterial
-          map={texture}
-          emissive="#FFD700"
+          color="#FFD700"
+          emissive="#FFA500"
           emissiveIntensity={1.0}
-          emissiveMap={texture}
           roughness={1}
           metalness={0}
         />
@@ -66,17 +61,10 @@ export default function Sun({ onClick, isSelected }: SunProps) {
       </mesh>
 
       {/* 标签 */}
-      <Text
-        position={[0, 7, 0]}
-        fontSize={0.8}
-        color="#FFD700"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.05}
-        outlineColor="black"
-      >
-        太阳
-      </Text>
+      <mesh position={[0, 7, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
+        <meshBasicMaterial color="#FFD700" />
+      </mesh>
 
       <pointLight intensity={2.5} distance={800} color="#FFF8DC" />
     </group>
