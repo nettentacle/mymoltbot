@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface OortCloudProps {
@@ -47,6 +46,16 @@ export default function OortCloud({ cloud }: OortCloudProps) {
 
   const { positions, colors } = generateOortCloud();
 
+  // 创建粒子材质
+  const particleMaterial = new THREE.PointsMaterial({
+    transparent: true,
+    vertexColors: true,
+    size: 0.18,
+    sizeAttenuation: true,
+    opacity: 0.3,
+    depthWrite: false
+  });
+
   useFrame((state, delta) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.005;
@@ -55,19 +64,22 @@ export default function OortCloud({ cloud }: OortCloudProps) {
   });
 
   return (
-    <Points 
-      ref={pointsRef} 
-      positions={positions}
-      stride={3}
-    >
-      <PointMaterial
-        transparent
-        vertexColors
-        size={0.18}
-        sizeAttenuation={true}
-        opacity={0.3}
-        depthWrite={false}
-      />
-    </Points>
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={colors.length / 3}
+          array={colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <primitive object={particleMaterial} />
+    </points>
   );
 }

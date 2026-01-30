@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
+import { useRef, useState } from 'react';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { Line, Text } from '@react-three/drei';
 import * as THREE from 'three';
+import { KuiperBeltObject } from '@/types/solar-system';
 
 interface KuiperBeltProps {
   objects: KuiperBeltObject[];
@@ -23,6 +24,7 @@ export default function KuiperBelt({
   onPlanetClick
 }: KuiperBeltProps) {
   const groupRef = useRef<THREE.Group>(null);
+  const particlesRef = useRef<THREE.Points>(null);
 
   // 生成柯伊伯带粒子
   const generateParticles = () => {
@@ -53,6 +55,24 @@ export default function KuiperBelt({
   };
 
   const { positions, colors } = generateParticles();
+
+  // 创建粒子材质
+  const particleMaterial = useRef(new THREE.PointsMaterial({
+    transparent: true,
+    vertexColors: true,
+    size: 0.12,
+    sizeAttenuation: true,
+    opacity: 0.4
+  }));
+
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.0005;
+    }
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y += delta * 0.001;
+    }
+  });
 
   return (
     <group ref={groupRef}>
@@ -147,49 +167,23 @@ export default function KuiperBelt({
       })}
 
       {/* 柯伊伯带粒子 */}
-      <Points positions={positions}>
-        <PointMaterial
-          transparent
-          vertexColors
-          size={0.12}
-          sizeAttenuation={true}
-          opacity={0.4}
-        />
-      </Points>
+      <points ref={particlesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={positions.length / 3}
+            array={positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={colors.length / 3}
+            array={colors}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <primitive object={particleMaterial.current} />
+      </points>
     </group>
   );
-}
-
-function Points({ positions, children }: { positions: Float32Array; children: any }) {
-  const pointsRef = useRef<THREE.Points>(null);
-
-  useFrame((state, delta) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.001;
-    }
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={positions.length / 3}
-          array={new Float32Array(positions.length)}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      {children}
-    </points>
-  );
-}
-
-function PointMaterial({ children, ...props }: any) {
-  return <pointsMaterial {...props}>{children}</pointsMaterial>;
 }
